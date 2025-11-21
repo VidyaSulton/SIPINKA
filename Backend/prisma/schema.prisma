@@ -1,0 +1,78 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+  // Connection URL moved to prisma.config.ts per Prisma v7 — tapi yang digunakan saat ini masih v6 sehingga diharuskan menaruh url di schema.prisma
+}
+
+model User{
+  userId    Int @id @default(autoincrement())
+  username  String @unique
+  email     String
+  password  String
+  role      Role @default(USER)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+   // Relasi: Satu user bisa punya banyak peminjaman
+  peminjaman Peminjaman[]
+}
+
+enum Role{
+  USER
+  ADMIN
+}
+
+model Ruangan{
+  ruanganId      Int @id @default(autoincrement())
+  namaRuangan    String
+  lokasiRuangan  String
+  kapasitas      Int   
+  jamBuka        String  // Format: "06:00"
+  jamTutup       String  // Format: "18:00"
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  // Relasi: Satu ruangan bisa punya banyak peminjaman
+  peminjaman Peminjaman[]
+}
+
+model Peminjaman{
+  peminjamanId  Int@id @default(autoincrement())
+  userId        Int
+  ruanganId     Int
+  tanggal       DateTime @db.Date
+  jamMulai      String
+  jamSelesai    String
+  keterangan    String @db.Text
+  lampiranSurat String? 
+  status        StatusPeminjaman @default(Menunggu)
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+
+  // Relasi
+  user    User    @relation(fields: [userId], references: [userId], onDelete: Cascade)
+  ruangan Ruangan @relation(fields: [ruanganId], references: [ruanganId], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([ruanganId])
+  @@index([tanggal])
+}
+
+enum StatusPeminjaman{
+  Menunggu
+  Disetujui
+  Ditolak
+}
+ 
