@@ -1,4 +1,4 @@
-# 🏢 SIPINKA (Sistem Informasi Manajemen Peminjaman Ruangan)
+# 🏢 SIPINKA (Sistem Informasi Peminjaman Ruangan Kampus)
 
 Aplikasi fullstack untuk mengelola peminjaman ruangan pada lingkungan kampus
 
