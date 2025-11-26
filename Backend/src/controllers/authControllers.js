@@ -1,7 +1,6 @@
-const { request } = require('express');
-const { generateToken, verifyToken} = require('/utils/jwt');
-const { hashPassword, comparePassword} = require('/utils/password');
-const { PrismaClient} = require('generated/prisma');
+const { generateToken, verifyToken} = require('../utils/jwt');
+const { hashPassword, comparePassword} = require('../utils/password');
+const { PrismaClient} = require('../../generated/prisma');
 
 const prisma = new PrismaClient();
 
@@ -27,7 +26,8 @@ const register = async (req, res) => {
         }
 
         // cek apakah email sudah terdaftar
-        const existingUser = await prisma.user.findUnique({
+        // findFirst digunakan untuk mencari satu data pertama yang sesuai dengan kondisi
+        const existingUser = await prisma.user.findFirst({
             where: { email }
         });
 
@@ -49,7 +49,7 @@ const register = async (req, res) => {
                 role: 'USER'
             },
             select: {
-                id: true,
+                userId: true,
                 username: true,
                 email: true,
                 role: true,
@@ -65,7 +65,7 @@ const register = async (req, res) => {
         });
 
         // Respon sukses
-        res.status(20).json({
+        res.status(200).json({
             success: true,
             message: "Registrasi berhasil",
             data: {
@@ -96,7 +96,8 @@ const login = async (req, res) => {
         }
 
         // cari user berdasarkan email
-        const user = await prisma.user.findUnique({
+        // findFirst digunakan untuk mencari satu data pertama yang sesuai dengan kondisi
+        const user = await prisma.user.findFirst({
             where: {email}
         });
 
