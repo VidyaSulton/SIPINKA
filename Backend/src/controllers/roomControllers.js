@@ -4,8 +4,8 @@ const prisma = new PrismaClient();
 
 const getAllRooms = async (req, res) => {
     try {
-        const rooms = await prisma.ruangan.findFirst({
-            orderBy: { name: 'asc'} // Mengurutkan berdasarkan nama ruangan secara ascending
+        const rooms = await prisma.ruangan.findMany({
+            orderBy: { namaRuangan: 'asc'} // Mengurutkan berdasarkan nama ruangan secara ascending
         });
 
         res.status(200).json({
@@ -29,7 +29,7 @@ const getRoomsById = async (req, res) => {
         const { id } = req.params;
 
         const room = await prisma.ruangan.findUnique({
-            where: {id: parseInt(id)}
+            where: {ruanganId: parseInt(id)} // where berdasarkan ruanganId dan parseInt berdasarkan id dari params
         });
 
         if (!room) {
@@ -66,7 +66,7 @@ const createRoom = async (req, res) => {
         }
 
         // Validasi kapasitas harus angka positif
-        if (capacity < 1) {
+        if (kapasitas < 1) {
             return res.status(400).json({
             success: false,
             message: 'Kapasitas minimal 1 orang'
@@ -115,14 +115,14 @@ const createRoom = async (req, res) => {
     }
 };
 
-const updateRoom = async (res, req) => {
+const updateRoom = async (req, res) => {
     try {
-        const {id} = req.params;
+        const { id } = req.params;
         const { namaRuangan, lokasiRuangan, kapasitas, jamBuka, jamTutup } = req.body;
 
         // Cek apakah ruangan ada
         const existingRoom = await prisma.ruangan.findUnique({
-            where: {id: parseInt(id)}
+            where: {ruanganId: parseInt(id)}
         });
         if (!existingRoom) {
             return res.status(404).json({
@@ -131,8 +131,30 @@ const updateRoom = async (res, req) => {
             });
         }
 
+        if (kapasitas && kapasitas< 1) {
+            return res.status(400).json({
+                success: false,
+                message: "Kapasitas minimal 1 orang"
+            });
+        }
+        
+        const timeRegex = /^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$/;
+        if (jamBuka && !timeRegex.test(jamBuka)) {
+            return res.status(400).json({
+                success: false,
+                message: 'Format jam buka tidak valid (gunakan HH:MM)'
+            });
+        }
+        if (jamTutup && !timeRegex.test(jamTutup)) {
+            return res.status(400).json({
+                success: false,
+                message: 'Format jam tutup tidak valid (gunakan HH:MM)'
+            });
+        }
+
+        // Update data ruangan
         const updatedRoom = await prisma.ruangan.update({
-            where: {id: parseInt(id)},
+            where: {ruanganId: parseInt(id)},
             data:{
                 namaRuangan : namaRuangan,   
                 lokasiRuangan : lokasiRuangan,  
@@ -150,7 +172,7 @@ const updateRoom = async (res, req) => {
 
     } catch (error) {
         console.log(error)
-        res.status(500).json({
+            res.status(500).json({
             success: false,
             message: 'Terjadi kesalahan saat mengupdate ruangan',
             error: error.message
@@ -160,20 +182,21 @@ const updateRoom = async (res, req) => {
 
 const deleteRoom = async (req, res) => {
     try {
-        const {id} = req.params;
+        // cek apakah ruangan ada
+        const { id } = req.params;
         const existingRoom = await prisma.ruangan.findUnique({
-            where:{id: parseInt(id)}
+            where:{ruanganId: parseInt(id)}
         });
 
-        if (!room) {
+        if (!existingRoom) {
             return res.status(404).json({
                 succes: false,
                 message: "Ruangan tidak ditemukan"
             });
         }
-
+        // Hapus data ruangan (bookings terkait akan otomatis terhapus karena onDelete: Cascade)
         await prisma.ruangan.delete({
-            where: {id: parseInt(id)}
+            where: {ruanganId: parseInt(id)} 
         })
         res.status(200).json({
             success: true,
