@@ -4,6 +4,7 @@ const cors = require('cors');
 const { PrismaClient } = require('./generated/prisma');
 const authRoutes = require('./src/routes/authRoutes')
 const roomRoutes = require('./src/routes/roomRoutes');
+const bookingRoutes = require('./src/routes/bookingRoutes');
 
 const app =  express();
 const prisma = new PrismaClient();
@@ -13,13 +14,15 @@ app.use(cors());
 app.use(express.json());
 app.use('/api/auth', authRoutes);
 app.use('/api/rooms', roomRoutes);
+app.use('/api/bookings', bookingRoutes);
 
 app.get('/test',(req,res)=>{
     res.json({
         message: "the backend is running btw",
         endpoints: {
             auth:'/api/auth (register, login)',
-            rooms:'/api/rooms(CRUD ruangan)'
+            rooms:'/api/rooms(CRUD ruangan)',
+            bookings:'/api/bookings (Peminjaman ruangan)'
         }
     });
 });
