@@ -9,16 +9,16 @@ const timeToMinutes = (time) => {
 };
 
 // fungsi untuk memeriksa konflik jadwal
-const checkScheduleConflict = async (roomId, tanggal, jamMulai, jamSelesai, excludeBookingId = null) => {
+const checkScheduleConflict = async (ruanganId, tanggal, jamMulai, jamSelesai, excludeBookingId = null) => {
   const bookingDate = new Date(tanggal);
   bookingDate.setHours(0, 0, 0, 0);
 
-  const existingBookings = await prisma.booking.findMany({
+  const existingBookings = await prisma.peminjaman.findMany({
     where: {
-      roomId: roomId,
+      ruanganId: ruanganId,
       tanggal: bookingDate,
       status: 'Disetujui', // Hanya cek yang sudah disetujui
-      ...(excludeBookingId && { id: { not: excludeBookingId } }) // Exclude booking yg sedang di-update
+      ...(excludeBookingId && { peminjamanId: { not: excludeBookingId } }) // Exclude booking yg sedang di-update
     }
   });
   const newStart = timeToMinutes(jamMulai);
@@ -42,11 +42,11 @@ const checkScheduleConflict = async (roomId, tanggal, jamMulai, jamSelesai, excl
 // Controller untuk membuat booking baru oleh user
 const createBooking = async (req, res) => {
     try {
-    const { roomId, tanggal, jamMulai, jamSelesai, keterangan } = req.body;
+    const { ruanganId, tanggal, jamMulai, jamSelesai, keterangan } = req.body;
     const userId = req.user.userId;
 
     // Validasi input
-     if (!roomId || !tanggal || !jamMulai || !jamSelesai || !keterangan) {
+     if (!ruanganId || !tanggal || !jamMulai || !jamSelesai || !keterangan) {
       return res.status(400).json({
         success: false,
         message: 'Semua field wajib diisi'
@@ -71,7 +71,7 @@ const createBooking = async (req, res) => {
 
     // cek apakah ruangan tersedia
     const room = await prisma.ruangan.findUnique({
-        where: {userId: parseInt(ruanganId)}
+        where: {ruanganId: parseInt(ruanganId)}
     });
 
     if (!room) {
@@ -93,7 +93,7 @@ const createBooking = async (req, res) => {
         message: 'Tanggal peminjaman tidak boleh di masa lalu'
       });
     }
-
+    // Validasi jam dalam rentang operasional ruangan
     const jamBukaMinutes = timeToMinutes(room.jamBuka);
     const jamTutupMinutes = timeToMinutes(room.jamTutup);
     const jamMulaiMinutes = timeToMinutes(jamMulai);
@@ -105,9 +105,9 @@ const createBooking = async (req, res) => {
         message: `Jam peminjaman harus dalam rentang operasional ruangan (${room.jamBuka} - ${room.jamTutup})`
       });
     }
-
+    // Cek bentrok jadwal
     const conflictCheck = await checkScheduleConflict(
-        parseInt(roomId),
+        parseInt(ruanganId),
         bookingDate,
         jamMulai,
         jamSelesai
@@ -124,21 +124,21 @@ const createBooking = async (req, res) => {
         }
       });
     }
-
-    const newBooking = await prisma.booking.create({
+    // Buat peminjaman baru
+    const newBooking = await prisma.peminjaman.create({
         data: {
         userId,
-        roomId: parseInt(roomId),
+        ruanganId: parseInt(ruanganId),
         tanggal: bookingDate,
         jamMulai,
         jamSelesai,
         keterangan,
         status: 'Menunggu' // status awal
-        }, 
-         include: {
-        Ruangan: {
+      }, 
+      include: {
+        ruangan: {
           select: {
-            RuanganId: true,
+            ruanganId: true,
             namaRuangan: true,
             kapasitas: true
           }
@@ -181,9 +181,9 @@ const getMyBookings = async (req, res) => {
     const bookings = await prisma.peminjaman.findMany({
       where: whereClause,
       include: {
-        Ruangan: {
+        ruangan: {
           select: {
-            RuanganId: true,
+            ruanganId: true,
             namaRuangan: true,
             kapasitas: true
           }
@@ -217,14 +217,14 @@ const getAllBookings = async (req, res) => {
   try {
     const bookings = await prisma.peminjaman.findMany({
       include: {
-        User:{
+        user:{
           select: {
             userId: true,
             username: true,
             email: true
           }
         },
-        Ruangan:{
+        ruangan:{
           select:{
             ruanganId: true,
             namaRuangan: true,
@@ -261,7 +261,7 @@ const getPublicBookings = async (req, res) => {
     const { ruanganId, tanggal } = req.query;
 
     const whereClause = {
-      status: "Disetujui"
+      status: "Disetujui" // Hanya yang sudah disetujui
     };
 
     if (ruanganId) {
@@ -278,15 +278,15 @@ const getPublicBookings = async (req, res) => {
         jamMulai: true,
         jamSelesai: true,
         keterangan: true,
-        Ruangan: {
+        ruangan: {
           select:{
             ruanganId: true,
             namaRuangan: true
           }
         },
-        User:{
+        user:{
           select:{
-            username: true
+            username: true // Hanya nama, tidak perlu email
           }
         }
       },
@@ -321,7 +321,7 @@ const approveBooking = async (req, res) => {
     const booking = await prisma.peminjaman.findUnique({
       where: { peminjamanId: parseInt(peminjamanId)},
       include: {
-        Ruangan: true
+        ruangan: true
       }
     });
 
@@ -361,14 +361,14 @@ const approveBooking = async (req, res) => {
       where: { peminjamanId: parseInt(peminjamanId) },
       data: { status: 'Disetujui' },
       include: {
-        User:{
+        user:{
           select:{
             userId: true,
             username: true,
             email: true
           }
         },
-        Ruangan:{
+        ruangan:{
           select:{
             ruanganId: true,
             namaRuangan: true
@@ -398,6 +398,7 @@ const rejectBooking = async (req, res) => {
   try {
     const { peminjamanId } = req.params;
 
+    // Cek apakah booking ada
     const booking = await prisma.peminjaman.findUnique({
       where: { peminjamanId: parseInt(peminjamanId)}
     })
@@ -408,26 +409,26 @@ const rejectBooking = async (req, res) => {
         message: 'Peminjaman tidak ditemukan'
       });
     }
-
+    // Cek apakah masih Menunggu
     if (booking.status !== 'Menunggu') {
       return res.status(400).json({
         success: false,
         message: `Peminjaman sudah ${booking.status === 'APPROVED' ? 'disetujui' : 'ditolak'} sebelumnya`
       });
     }
-
+    // Reject booking
     const rejectedBooking = await prisma.peminjaman.update({
       where: { peminjamanId: parseInt(peminjamanId)},
       data: { status: 'Ditolak' },
       include: {
-        User: {
+        user: {
           select: {
             userId: true,
             username: true,
             email: true
           }
         },
-        Ruangan: {
+        ruangan: {
           select: {
             ruanganId: true,
             namaRuangan: true,
@@ -457,8 +458,8 @@ const rejectBooking = async (req, res) => {
 const deleteBooking = async (req, res) => {
   try {
     const { peminjamanId } = req.params;
-    const { userId } = req.user.userId;
-    const { role } = req.user.role;
+    const userId  = req.user.userId;
+    const role = req.user.role;
 
     // Cek apakah booking ada
     const booking = await prisma.booking.findUnique({
@@ -471,21 +472,21 @@ const deleteBooking = async (req, res) => {
         message: 'Peminjaman tidak ditemukan'
       });
     }
-
+    // Cek kepemilikan booking (kecuali admin) 
     if (role !== 'ADMIN' && booking.userId !== userId) {
       return res.status(403).json({
         success: false,
         message: 'Anda tidak memiliki akses untuk menghapus peminjaman ini'
       });
     }
-
+    // Hanya bisa hapus jika Menunggu
     if (booking.status !== 'Menunggu') {
       return res.status(400).json({
         success: false,
         message: 'Hanya peminjaman dengan status Menunggu yang bisa dihapus'
       });
     }
-
+    // Hapus Booking
     await prisma.peminjaman.delete({
       where: { peminjamanId: parseInt(peminjamanId)}
     });
