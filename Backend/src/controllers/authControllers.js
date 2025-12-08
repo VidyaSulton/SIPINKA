@@ -59,7 +59,7 @@ const register = async (req, res) => {
 
         // generate token jwt
         const token = generateToken({
-            userId: newUser.id,
+            userId: newUser.userId,
             email: newUser.email,
             role: newUser.role
         });
@@ -120,7 +120,7 @@ const login = async (req, res) => {
 
         // generate token jwt
         const token = generateToken({
-            userId: user.id,
+            userId: user.userId,
             email: user.email,
             role: user.role
         });
@@ -131,7 +131,7 @@ const login = async (req, res) => {
             message: "Login berhasil",
             data: {
                 user: {
-                    userId: user.id,
+                    userId: user.userId,
                     username: user.username,
                     email: user.email,
                     role: user.role
