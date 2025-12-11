@@ -1,11 +1,17 @@
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
 
-// Import pages
+// Auth pages
 import LoginPage from './pages/auth/LoginPage';
 import RegisterPage from './pages/auth/RegisterPage';
-import UserDashboard from './pages/user/UserDashboard';
+
+// Admin pages
 import AdminDashboard from './pages/admin/AdminDashboard';
+
+// User pages
+import UserDashboard from './pages/user/UserDashboard';
+import BookingPage from './pages/user/BookingPage';
+import MyBookingPage from './pages/user/MyBookingPage';
 
 // Protected Route Component
 function ProtectedRoute({ children, adminOnly = false }) {
@@ -70,6 +76,18 @@ function App() {
           <Route path='/dashboard' element={
             <ProtectedRoute>
               <UserDashboard />
+            </ProtectedRoute>
+          }
+          />
+          <Route path='/dashboard/bookings' element={
+            <ProtectedRoute>
+              <BookingPage />
+            </ProtectedRoute>
+          }
+          />
+          <Route path='/dashboard/my-bookings' element={
+            <ProtectedRoute>
+              <MyBookingPage />
             </ProtectedRoute>
           }
           />
