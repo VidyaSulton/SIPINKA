@@ -7,6 +7,8 @@ import RegisterPage from './pages/auth/RegisterPage';
 
 // Admin pages
 import AdminDashboard from './pages/admin/AdminDashboard';
+import RoomManagementPage from './pages/admin/RoomManagement';
+import BookingManagementPage from './pages/admin/BookingManagement';
 
 // User pages
 import UserDashboard from './pages/user/UserDashboard';
@@ -94,8 +96,20 @@ function App() {
 
           {/* Admin Routes */}
           <Route path='/admin' element={
-            <ProtectedRoute>
+            <ProtectedRoute adminOnly>
               <AdminDashboard />
+            </ProtectedRoute>
+          }
+          />
+          <Route path='/admin/rooms' element={
+            <ProtectedRoute adminOnly>
+              <RoomManagementPage />
+            </ProtectedRoute>
+          }
+          />
+          <Route path='/admin/bookings' element={
+            <ProtectedRoute adminOnly>
+              <BookingManagementPage />
             </ProtectedRoute>
           }
           />
