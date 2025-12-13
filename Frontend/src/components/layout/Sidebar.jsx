@@ -1,13 +1,15 @@
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
 import { 
   LayoutDashboard, 
   Calendar, 
   FileText, 
   LogOut,
   Menu,
-  X
+  X,
+  Shield,
 } from 'lucide-react';
 import { useState } from 'react';
 import path from 'path';
@@ -73,18 +75,23 @@ export default function Sidebar() {
       >
         <div className="flex flex-col h-full">
           {/* Logo/Brand */}
-          <div className="p-6 border-b border-gray-200">
-            <h1 className="text-xl font-bold bg-linear-to-r from-blue-900 to-blue-700 bg-clip-text text-transparent">
-              📚 Peminjaman Ruangan
-            </h1>
-            <p className="text-sm text-gray-600 mt-1">Dashboard User</p>
+         <div className="p-6 border-b border-gray-200 bg-gradient-to-br from-blue-900 to-blue-800">
+            <div className="flex items-center gap-2 mb-2">
+              <Shield className="text-white" size={24} />
+              <h1 className="text-xl font-bold text-white">
+                SIPINKA
+              </h1>
+            </div>
+            <Badge variant="secondary" className="bg-white text-blue-900">
+              User Dashboard
+            </Badge>
           </div>
 
           {/* User Info */}
           <div className="p-6 border-b border-gray-200 bg-linear-to-br from-blue-50 to-indigo-50">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-full bg-linear-to-br from-blue-900 to-blue-700 flex items-center justify-center text-white font-semibold">
-                {user?.name?.charAt(0).toUpperCase()}
+              <div className="w-10 h-10 rounded-full bg-gradient-to-br from-blue-900 to-blue-700 flex items-center justify-center text-white font-semibold">
+                {user?.username?.charAt(0).toUpperCase()}
               </div>
               <div className="flex-1 min-w-0">
                 <p className="font-medium text-gray-900 truncate">{user?.username}</p>
