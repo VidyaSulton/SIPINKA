@@ -75,7 +75,10 @@ export default function RegisterPage() {
     <div className="min-h-screen flex items-center justify-center bg-linear-to-br from-slate-50 to-slate-100 p-4">
       <Card className="w-full max-w-md">
         <CardHeader className="space-y-1">
-          <CardTitle className="text-2xl font-bold text-center text-blue-900">
+          <CardTitle className="text-4xl font-extrabold text-center text-blue-900">
+            SIPINKA
+          </CardTitle>
+          <CardTitle className="text-2xl font-semibold text-center text-blue-900">
             Daftar Akun
           </CardTitle>
           <CardDescription className="text-center">
