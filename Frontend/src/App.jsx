@@ -1,6 +1,9 @@
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
 
+// Public pages
+import LandingPage from './pages/public/LandingPage';
+
 // Auth pages
 import LoginPage from './pages/auth/LoginPage';
 import RegisterPage from './pages/auth/RegisterPage';
@@ -61,6 +64,11 @@ function App() {
         <Routes>
           
           {/* Public Routes */}
+          <Route path='/' element={
+            <LandingPage/>
+          }>
+          </Route>
+
           <Route path="/login" element={
             <PublicRoute>
               <LoginPage />
