@@ -79,7 +79,7 @@ export default function Sidebar() {
             <div className="flex items-center gap-2 mb-2">
               <Shield className="text-white" size={24} />
               <h1 className="text-xl font-bold text-white">
-                SIPINKA
+                SiPinKa
               </h1>
             </div>
             <Badge variant="secondary" className="bg-white text-blue-900">
