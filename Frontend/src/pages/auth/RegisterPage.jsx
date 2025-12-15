@@ -76,7 +76,7 @@ export default function RegisterPage() {
       <Card className="w-full max-w-md">
         <CardHeader className="space-y-1">
           <CardTitle className="text-4xl font-extrabold text-center text-blue-900">
-            SIPINKA
+            SiPinKa
           </CardTitle>
           <CardTitle className="text-2xl font-semibold text-center text-blue-900">
             Daftar Akun
