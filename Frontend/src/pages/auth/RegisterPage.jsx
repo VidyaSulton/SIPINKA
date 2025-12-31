@@ -1,4 +1,4 @@
-import { use, useState } from 'react';
+import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 import { Button } from '@/components/ui/button';
@@ -6,7 +6,7 @@ import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 
 export default function RegisterPage() {
-    const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState({
     name: '',
     email: '',
     password: '',
@@ -20,10 +20,10 @@ export default function RegisterPage() {
 
 
   const handleChange = (e) => {
-    setFormData({
-        ...FormData,
-        [e.target.name]: e.target.value
-    });
+    setFormData(prev => ({
+      ...prev,
+      [e.target.name]: e.target.value
+    }));
   };
 
   const handleSubmit = async (e) => {
@@ -45,14 +45,14 @@ export default function RegisterPage() {
     setLoading(true);
 
     try {
-      const response = await fetch('http://localhost:5000/api/auth/register', {
+      const response = await fetch('http://localhost:3050/api/auth/register', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          name: formData.name,
-          email: formData.email,
-          password: formData.password
-        })
+            username: formData.name,
+            email: formData.email,
+            password: formData.password
+          })
       });
 
       const data = await response.json();
