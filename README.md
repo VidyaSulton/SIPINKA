@@ -9,27 +9,27 @@ Sistem Informasi Manajemen untuk mengelola peminjaman ruangan pada lingkungan ka
 
 ---
 
-## 📋 Fitur Utama
+## Fitur Utama
 
-### 🌐 Publik (Guest)
-- ✅ Melihat daftar ruangan
-- ✅ Melihat jadwal peminjaman yang disetujui
-- ✅ Landing page informasi
+### Publik (Guest)
+- Melihat daftar ruangan
+- Melihat jadwal peminjaman yang disetujui
+- Landing page informasi
 
-### 👤 User (Login)
-- ✅ Semua fitur Guest
-- ✅ Mengajukan peminjaman ruangan
-- ✅ Melihat riwayat peminjaman sendiri
-- ✅ Filter peminjaman by status (Menunggu/Disetujui/Ditolak)
-- ✅ Menghapus pengajuan peminjaman (jika masih Menunggu)
-- ✅ Tracking status pengajuan real-time
+### User (Login)
+- Semua fitur Guest
+- Mengajukan peminjaman ruangan
+- Melihat riwayat peminjaman sendiri
+- Filter peminjaman by status (Menunggu/Disetujui/Ditolak)
+- Menghapus pengajuan peminjaman (jika masih Menunggu)
+- Tracking status pengajuan real-time
 
-### 👨‍💼 Admin (Login)
-- ✅ Semua fitur User
-- ✅ CRUD Manajemen Ruangan (termasuk jam operasional)
-- ✅ Setujui/Tolak pengajuan peminjaman
-- ✅ Melihat semua riwayat peminjaman
-- ✅ Filter peminjaman by status/ruangan
+### Admin (Login)
+- Semua fitur User
+- CRUD Manajemen Ruangan (termasuk jam operasional)
+- Setujui/Tolak pengajuan peminjaman
+- Melihat semua riwayat peminjaman
+- Filter peminjaman by status/ruangan
 
 ---
 
@@ -59,13 +59,13 @@ Sistem Informasi Manajemen untuk mengelola peminjaman ruangan pada lingkungan ka
 - MySQL (XAMPP/MySQL Server)
 - Git
 
-### 1️⃣ Clone Repository
+### 1️ Clone Repository
 ```bash
 git clone https://github.com/vidyasulton/sistem-peminjaman-ruangan.git
 cd sistem-peminjaman-ruangan
 ```
 
-### 2️⃣ Setup Backend
+### 2️ Setup Backend
 
 #### a. Masuk ke folder backend
 ```bash
@@ -96,7 +96,7 @@ JWT_SECRET="ganti_dengan_string_random_aman_minimal_32_karakter"
 PORT=3050
 ```
 
-**⚠️ PENTING:** Ganti `JWT_SECRET` dengan string random yang kuat untuk keamanan!
+** PENTING:** Ganti `JWT_SECRET` dengan string random yang kuat untuk keamanan!
 
 #### e. Jalankan Prisma Migration
 ```bash
@@ -116,7 +116,7 @@ npm run dev
 
 ---
 
-### 3️⃣ Setup Frontend
+### 3️ Setup Frontend
 
 Buka **terminal baru** (jangan tutup terminal backend).
 
@@ -139,7 +139,7 @@ npm run dev
 
 ---
 
-### 4️⃣ Akses Aplikasi
+### 4️ Akses Aplikasi
 
 Buka browser dan akses:
 - **Landing Page:** `http://localhost:5173`
@@ -148,7 +148,7 @@ Buka browser dan akses:
 
 ---
 
-## 👤 Membuat User Admin Pertama
+## Membuat User Admin Pertama
 
 Setelah register user pertama, ubah role-nya menjadi ADMIN:
 
