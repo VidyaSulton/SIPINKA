@@ -33,26 +33,22 @@ Sistem Informasi Manajemen untuk mengelola peminjaman ruangan pada lingkungan ka
 
 ---
 
-## 🛠️ Tech Stack
+## Tech Stack
 
 ### Frontend
-- **React 19.2** + **Vite 7** - UI Framework & Build Tool
-- **TailwindCSS 4.1** - Utility-first CSS Framework
-- **Shadcn/ui** - Komponen UI modern & accessible
-- **React Router 7** - Client-side routing
-- **Lucide React** - Icon library
+- **React 19.2**
+- **TailwindCSS 4.1**
+- **Shadcn/ui**
+- **React Router 7** 
 
 ### Backend
-- **Node.js 18+** + **Express** - Server & REST API
-- **Prisma** - ORM untuk database
-- **MySQL** - Relational Database
-- **JWT (jsonwebtoken)** - Authentication & Authorization
-- **bcryptjs** - Password hashing
-- **CORS** - Cross-Origin Resource Sharing
+- **Node.js 18+** + **Express**
+- **Prisma**
+- **MySQL**
 
 ---
 
-## 🚀 Cara Menjalankan Proyek
+## Cara Menjalankan Proyek
 
 ### Prasyarat
 - Node.js v18+ terinstall
@@ -145,20 +141,6 @@ Buka browser dan akses:
 - **Landing Page:** `http://localhost:5173`
 - **Login:** `http://localhost:5173/login`
 - **Register:** `http://localhost:5173/register`
-
----
-
-## Membuat User Admin Pertama
-
-Setelah register user pertama, ubah role-nya menjadi ADMIN:
-
-### Via phpMyAdmin
-1. Buka phpMyAdmin
-2. Pilih database `peminjaman_ruangan`
-3. Klik tabel `User`
-4. Edit user yang diinginkan
-5. Ubah kolom `role` menjadi `ADMIN`
-6. Save
 
 ---
 
